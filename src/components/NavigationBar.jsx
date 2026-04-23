@@ -15,6 +15,7 @@ export default function NavigationBar() {
           </div>
           <div className="flex items-center space-x-6">
             <Link to="/" className="text-sm font-medium text-slate-300 hover:text-white transition-colors duration-200">Dashboard</Link>
+            <Link to="/projects" className="text-sm font-medium text-slate-300 hover:text-white transition-colors duration-200">Projects</Link>
             <Link to="/about" className="text-sm font-medium text-slate-300 hover:text-white transition-colors duration-200">About</Link>
           </div>
         </div>

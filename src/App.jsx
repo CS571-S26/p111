@@ -12,6 +12,12 @@ import {
 
 import NavigationBar from './components/NavigationBar';
 import AboutPage from './pages/AboutPage';
+import ProjectsPage from './pages/ProjectsPage';
+import Sidebar from './components/Sidebar';
+import ProjectCard from './components/ProjectCard';
+import TaskBoard from './components/TaskBoard';
+import PipelineVisualizer from './components/PipelineVisualizer';
+import NewProjectModal from './components/NewProjectModal';
 import { STAGES, INITIAL_PROJECTS } from './data/mockData';
 
 export default function App() {
@@ -23,6 +29,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<FocusOS />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/projects" element={<ProjectsPage />} />
           </Routes>
         </main>
       </div>
@@ -110,11 +117,28 @@ function FocusOS() {
   const generateMondayDrop = async () => {
     setIsGeneratingDrop(true);
     try {
-      const res = await Promise.resolve({ ok: true, json: async () => ([]) });
+      const res = await Promise.resolve({ ok: true, json: async () => ({
+        ideaName: 'AI Venture Studio Launchpad',
+        description: 'A next-gen AI workflow platform that combines market signal synthesis, rapid idea validation, and autonomously generated execution blueprints for growth-stage founders.',
+        niche: 'Founder Productivity + AI Ops',
+        convictionScore: 78,
+        expertPersonas: ['Growth Strategist', 'Product Ops Agent', 'Market Synthesis Bot'],
+        marketInsight: 'This idea draws on founder productivity trends and long-tail automation demand across research tools, content pipelines, and agent orchestration.',
+        agentGodPrompt: 'Generate a scalable AI operations platform that converts user research into autonomous product launch workflows and smart sprint plans.'
+      }) });
       const data = await res.json();
       setMondayDrop(data);
     } catch (e) {
       console.error(e);
+      setMondayDrop({
+        ideaName: 'AI Venture Studio Launchpad',
+        description: 'A next-gen AI workflow platform that combines market signal synthesis, rapid idea validation, and autonomously generated execution blueprints.',
+        niche: 'Founder Productivity + AI Ops',
+        convictionScore: 72,
+        expertPersonas: ['Growth Strategist', 'Product Ops Agent', 'Market Synthesis Bot'],
+        marketInsight: 'This idea draws on founder productivity trends and long-tail automation demand across research tools, content pipelines, and agent orchestration.',
+        agentGodPrompt: 'Generate a scalable AI operations platform that converts user research into autonomous product launch workflows and smart sprint plans.'
+      });
     } finally {
       setIsGeneratingDrop(false);
     }
@@ -239,8 +263,10 @@ function FocusOS() {
           if(i === deployEvents.length - 1) {
             setTimeout(() => {
               setAgentStatus('deployed');
+              const ideaName = mondayDrop?.ideaName || 'AI Venture Sprint';
+              const niche = mondayDrop?.niche || 'AI Strategy';
               const newSprint = {
-                id: Date.now(), type: 'sprint', title: mondayDrop.ideaName, niche: mondayDrop.niche,
+                id: Date.now(), type: 'sprint', title: ideaName, niche,
                 status: 'Live Scaffold', dueDate: '1-Week Agent Sprint',
                 tasks: { backlog: [], active: [{id: 888, text: 'Execute `.instructions.md` with Claude'}], review: [], launched: [{id: 999, text: 'Auto-Scaffolding Complete'}] }
               };
@@ -484,86 +510,18 @@ function FocusOS() {
     );
   };
 
-  const SidebarItem = ({ icon: Icon, label, isActive, onClick, colorClass = "text-slate-400", bgClass = "" }) => (
-    <button 
-      onClick={() => { onClick(); setIsMobileMenuOpen(false); }}
-      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-sm
-        ${isActive ? (bgClass || 'bg-indigo-600') + ' text-white shadow-md' : `hover:bg-slate-800 ${colorClass} hover:text-white`}`}
-    >
-      <Icon className="w-5 h-5" /> {label}
-    </button>
-  );
-
   return (
     <div className="min-h-screen flex bg-slate-950 font-sans text-slate-200 selection:bg-indigo-500/30">
-      {isMobileMenuOpen && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-40 md:hidden" onClick={() => setIsMobileMenuOpen(false)} />
-      )}
-
-      <aside className={`fixed md:static inset-y-0 left-0 z-50 w-72 bg-[#0a0a0a] border-r border-slate-800 flex flex-col transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
-        <div className="p-6 flex items-center justify-between border-b border-slate-800/50">
-          <h1 className="text-2xl font-black text-white flex items-center gap-2 tracking-tight">
-            <Rocket className="w-6 h-6 text-indigo-500" /> FocusOS <span className="text-[10px] bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded-full border border-indigo-500/30 tracking-widest ml-1">V3</span>
-          </h1>
-          <button className="md:hidden text-slate-400 hover:text-white" onClick={() => setIsMobileMenuOpen(false)}>
-            <X className="w-6 h-6" />
-          </button>
-        </div>
-
-        <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-          <div className="mb-8 space-y-2">
-            <SidebarItem 
-              icon={Bot} label="Pipeline Graph" 
-              isActive={!activeProjectId && view === 'pipeline'} 
-              bgClass="bg-indigo-600 shadow-indigo-900/30"
-              colorClass="text-indigo-400 font-bold"
-              onClick={() => { setActiveProjectId(null); setView('pipeline'); }} 
-            />
-            <SidebarItem 
-              icon={Sparkles} label="The Monday Drop" 
-              isActive={!activeProjectId && view === 'oracle'} 
-              bgClass="bg-gradient-to-r from-indigo-600 to-violet-600 shadow-indigo-900/30"
-              colorClass="text-indigo-400 font-bold"
-              onClick={() => { setActiveProjectId(null); setView('oracle'); }} 
-            />
-          </div>
-
-          <div className="mb-6 space-y-1">
-            <SidebarItem 
-              icon={LayoutDashboard} label="Active Dashboard" 
-              isActive={!activeProjectId && view === 'dashboard'} 
-              onClick={() => { setActiveProjectId(null); setView('dashboard'); }} 
-            />
-            <SidebarItem 
-              icon={Archive} label="Idea Vault" 
-              isActive={!activeProjectId && view === 'vault'} 
-              onClick={() => { setActiveProjectId(null); setView('vault'); }} 
-            />
-          </div>
-          
-          <div className="pt-4 pb-2 px-4 text-xs font-bold text-slate-500 uppercase tracking-wider">12-Week Anchor</div>
-          {anchorProject ? (
-             <SidebarItem 
-             icon={Target} label={anchorProject.title} 
-             isActive={activeProjectId === anchorProject.id} 
-             colorClass="text-emerald-500/80" bgClass="bg-emerald-600"
-             onClick={() => { setActiveProjectId(anchorProject.id); setView('dashboard'); }} 
-           />
-          ) : (
-            <div className="px-4 py-2 text-xs text-slate-600 italic">No anchor set. Stay focused.</div>
-          )}
-
-          <div className="pt-6 pb-2 px-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Active Sprints</div>
-          {sprintProjects.map(p => (
-            <SidebarItem 
-              key={p.id} icon={Zap} label={p.title} 
-              isActive={activeProjectId === p.id} 
-              colorClass="text-amber-500/80" bgClass="bg-amber-600"
-              onClick={() => { setActiveProjectId(p.id); setView('dashboard'); }} 
-            />
-          ))}
-        </nav>
-      </aside>
+      <Sidebar 
+        view={view} 
+        setView={setView} 
+        isMobileMenuOpen={isMobileMenuOpen} 
+        setIsMobileMenuOpen={setIsMobileMenuOpen}
+        activeProjectId={activeProjectId}
+        setActiveProjectId={setActiveProjectId}
+        anchorProject={anchorProject}
+        sprintProjects={sprintProjects}
+      />
 
       <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
         <header className="bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-slate-800 h-16 px-4 md:px-8 flex items-center justify-between shrink-0 sticky top-0 z-20">
@@ -592,7 +550,19 @@ function FocusOS() {
           
           {/* PIPELINE VISUALIZER */}
           {!activeProject && view === 'pipeline' && (
-            <PipelineVisualizer />
+            <PipelineVisualizer
+              sources={sources}
+              saveSources={saveSources}
+              isSavingSources={isSavingSources}
+              mondayDrop={mondayDrop}
+              generateMondayDrop={generateMondayDrop}
+              isGeneratingDrop={isGeneratingDrop}
+              ingestLogs={ingestLogs}
+              deployAgentPipeline={deployAgentPipeline}
+              agentStatus={agentStatus}
+              terminalLogs={terminalLogs}
+              terminalEndRef={terminalEndRef}
+            />
           )}
 
           {/* THE MONDAY DROP (AI ORACLE) */}
@@ -780,32 +750,13 @@ function FocusOS() {
                     <h3 className="text-2xl font-black text-white">12-Week Anchor Component</h3>
                  </div>
                  {anchorProject ? (
-                    <div 
-                      onClick={() => setActiveProjectId(anchorProject.id)}
-                      className="bg-gradient-to-br from-[#12141c] to-[#0a0a0a] rounded-2xl border-2 border-emerald-500/30 p-8 shadow-[0_8px_30px_rgba(16,185,129,0.06)] cursor-pointer hover:border-emerald-500/60 transition-all group"
-                    >
-                      <div className="flex justify-between items-start mb-6">
-                        <span className="px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-bold rounded-md uppercase tracking-widest">
-                          {anchorProject.niche}
-                        </span>
-                        <div className="text-sm font-bold text-slate-400 bg-slate-900 border border-slate-800 px-4 py-1.5 rounded-lg">
-                          Deadline: {anchorProject.dueDate}
-                        </div>
-                      </div>
-                      <h4 className="text-3xl font-black text-white mb-8 group-hover:text-emerald-400 transition-colors">{anchorProject.title}</h4>
-                      
-                      <div>
-                        <div className="flex justify-between text-sm font-bold text-slate-400 mb-3">
-                          <span>Sprint Sub-Progress</span>
-                          <span className="text-emerald-400">{getProgress(anchorProject)}%</span>
-                        </div>
-                        <div className="w-full bg-slate-900 border border-slate-800 h-3 rounded-full overflow-hidden">
-                          <div className="bg-emerald-500 h-full transition-all duration-1000 ease-out relative" style={{ width: `${getProgress(anchorProject)}%` }}>
-                             <div className="absolute inset-0 bg-white/20 w-full animate-pulse"></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    <ProjectCard 
+                      project={anchorProject} 
+                      onSelect={setActiveProjectId} 
+                      onToggleVault={toggleVaultStatus} 
+                      onDelete={deleteProject} 
+                      isActive={activeProjectId === anchorProject.id} 
+                    />
                  ) : (
                     <div className="bg-slate-900/50 border-2 border-dashed border-slate-800 rounded-2xl p-10 text-center">
                       <p className="text-slate-500 font-medium">Your schedule is empty for Deep Work.</p>
@@ -822,26 +773,14 @@ function FocusOS() {
                  
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {sprintProjects.map(project => (
-                      <div 
+                      <ProjectCard 
                         key={project.id} 
-                        onClick={() => setActiveProjectId(project.id)}
-                        className="bg-[#12141c] rounded-2xl border border-slate-800 p-6 shadow-xl cursor-pointer hover:border-amber-500/40 transition-all group flex flex-col"
-                      >
-                        <div className="flex-1">
-                          <span className="px-2 py-1 bg-amber-500/10 text-amber-400 text-xs font-bold rounded uppercase tracking-wide inline-block mb-4 border border-amber-500/20">
-                            {project.niche}
-                          </span>
-                          <h4 className="text-xl font-black text-white mb-4 group-hover:text-amber-400 transition-colors">{project.title}</h4>
-                        </div>
-                        <div className="mt-4">
-                          <div className="flex justify-between text-xs font-bold text-slate-500 mb-2">
-                            <span>Completion</span><span>{getProgress(project)}%</span>
-                          </div>
-                          <div className="w-full bg-slate-900 border border-slate-800 h-2 rounded-full overflow-hidden">
-                            <div className="bg-amber-500 h-full transition-all duration-700" style={{ width: `${getProgress(project)}%` }}/>
-                          </div>
-                        </div>
-                      </div>
+                        project={project} 
+                        onSelect={setActiveProjectId} 
+                        onToggleVault={toggleVaultStatus} 
+                        onDelete={deleteProject} 
+                        isActive={activeProjectId === project.id} 
+                      />
                     ))}
                     
                     <div 
@@ -859,79 +798,17 @@ function FocusOS() {
 
           {/* PROJECT BOARD / KANBAN */}
           {activeProject && (
-            <div className="h-full flex flex-col animate-in slide-in-from-right-8 duration-300 max-w-7xl mx-auto w-full pb-8">
-              <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-6 mb-8 border-b border-slate-800 pb-6">
-                <div>
-                  <div className="flex items-center gap-3 mb-2">
-                     <span className={`text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-md flex items-center gap-1.5 ${activeProject.type === 'anchor' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}`}>
-                        {activeProject.type === 'anchor' ? <Target className="w-3.5 h-3.5"/> : <Zap className="w-3.5 h-3.5" />}
-                        {activeProject.type === 'anchor' ? 'Deep Work Anchor' : 'Autonomous Sprint'}
-                     </span>
-                     <span className="text-sm font-bold text-slate-500">{activeProject.niche}</span>
-                  </div>
-                  <h3 className="text-3xl md:text-4xl font-black text-white tracking-tight">{activeProject.title}</h3>
-                </div>
-                
-                <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-                  <div className="text-sm font-bold bg-[#12141c] border border-slate-800 px-5 py-2.5 rounded-xl shadow-sm text-slate-300 flex items-center gap-2">
-                    <CheckCircle2 className={`w-5 h-5 ${getProgress(activeProject) === 100 ? 'text-emerald-400' : 'text-slate-600'}`} />
-                    {getProgress(activeProject)}% Ready
-                  </div>
-                  <button 
-                    onClick={() => toggleVaultStatus(activeProject.id, 'vault')}
-                    className="px-5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-slate-400 font-bold text-sm hover:text-white hover:bg-slate-800 transition-colors flex items-center gap-2"
-                  >
-                    <Archive className="w-4 h-4" /> Park to Vault
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex-1 flex gap-6 overflow-x-auto min-h-0 custom-scrollbar pb-4">
-                {STAGES.map((stage, stageIdx) => (
-                  <div key={stage.key} className="flex-shrink-0 w-full sm:w-[340px] flex flex-col bg-[#12141c] rounded-2xl border border-slate-800/80 p-4 relative">
-                    <div className={`absolute top-0 left-0 right-0 h-1 rounded-t-2xl ${stageIdx === 1 ? 'bg-indigo-500/50' : stageIdx === 3 ? 'bg-emerald-500/50' : 'bg-slate-800'}`}></div>
-                    
-                    <div className="flex items-center justify-between mb-4">
-                      <h4 className="font-bold text-slate-300 flex items-center gap-2 text-sm uppercase tracking-wide">
-                        <Circle className={`w-3.5 h-3.5 ${stageIdx === 1 ? 'fill-indigo-500 text-indigo-500' : stageIdx === 3 ? 'fill-emerald-500 text-emerald-500' : 'fill-slate-600 text-slate-600'}`} /> 
-                        {stage.label}
-                      </h4>
-                      <span className="text-xs font-bold text-slate-400 bg-slate-900 px-2.5 py-1 rounded">
-                        {activeProject.tasks[stage.key].length}
-                      </span>
-                    </div>
-
-                    <div className="flex-1 overflow-y-auto space-y-4 custom-scrollbar pr-1">
-                      {activeProject.tasks[stage.key].map(task => (
-                        <div key={task.id} className="bg-[#1a1d26] p-4 rounded-xl border border-slate-800 shadow-md group hover:border-slate-600 transition-colors">
-                          <p className="text-sm font-medium text-slate-200 mb-4 leading-relaxed">{task.text}</p>
-                          
-                          <div className="flex justify-between items-center bg-slate-900/50 p-1.5 rounded-lg border border-slate-800/50">
-                            <div className="flex gap-1">
-                              <button disabled={stageIdx === 0} onClick={() => moveTask(task.id, stage.key, -1)} className="p-1.5 rounded hover:bg-slate-700 text-slate-500 hover:text-slate-300 disabled:opacity-20 transition-colors"><ArrowLeft className="w-4 h-4" /></button>
-                              <button disabled={stageIdx === STAGES.length - 1} onClick={() => moveTask(task.id, stage.key, 1)} className="p-1.5 rounded hover:bg-slate-700 text-slate-500 hover:text-slate-300 disabled:opacity-20 transition-colors"><ArrowRight className="w-4 h-4" /></button>
-                            </div>
-                            <button onClick={() => deleteTask(task.id, stage.key)} className="p-1.5 rounded text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors md:opacity-0 group-hover:opacity-100"><Trash2 className="w-4 h-4" /></button>
-                          </div>
-                        </div>
-                      ))}
-
-                      {isAddingTaskTo === stage.key ? (
-                        <div className="bg-slate-900 p-4 rounded-xl border-2 border-indigo-500/50 shadow-lg animate-in zoom-in-95">
-                          <textarea autoFocus className="w-full text-sm resize-none outline-none font-medium text-slate-200 bg-transparent placeholder:text-slate-600" rows="2" placeholder="Type target execution..." value={newTaskText} onChange={(e) => setNewTaskText(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); addTask(stage.key); } }} />
-                          <div className="flex justify-end gap-2 mt-3 pt-3 border-t border-slate-800">
-                            <button onClick={() => setIsAddingTaskTo(null)} className="text-xs font-bold text-slate-500 hover:text-white px-2 py-1">Cancel</button>
-                            <button onClick={() => addTask(stage.key)} className="text-xs font-bold bg-indigo-600 text-white px-3 py-1.5 rounded disabled:opacity-50">Commit</button>
-                          </div>
-                        </div>
-                      ) : (
-                        <button onClick={() => setIsAddingTaskTo(stage.key)} className="w-full py-3.5 flex items-center justify-center gap-2 text-sm font-bold text-slate-500 bg-slate-900/50 hover:text-indigo-400 hover:bg-indigo-500/10 border border-transparent hover:border-indigo-500/20 rounded-xl transition-all border-dashed"><Plus className="w-4 h-4" /> Initialize Task</button>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <TaskBoard
+              activeProject={activeProject}
+              STAGES={STAGES}
+              moveTask={moveTask}
+              addTask={addTask}
+              deleteTask={deleteTask}
+              isAddingTaskTo={isAddingTaskTo}
+              setIsAddingTaskTo={setIsAddingTaskTo}
+              newTaskText={newTaskText}
+              setNewTaskText={setNewTaskText}
+            />
           )}
 
           {/* IDEA VAULT VIEW */}
@@ -1010,6 +887,14 @@ function FocusOS() {
           </div>
         </div>
       )}
+
+      <NewProjectModal
+        showNewProjectModal={showNewProjectModal}
+        setShowNewProjectModal={setShowNewProjectModal}
+        newProjectForm={newProjectForm}
+        setNewProjectForm={setNewProjectForm}
+        handleCreateProject={handleCreateProject}
+      />
 
       <style dangerouslySetInnerHTML={{__html: `
         .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
