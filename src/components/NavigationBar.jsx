@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { LayoutDashboard } from 'lucide-react';
 
 export default function NavigationBar() {
   return (
@@ -9,7 +8,7 @@ export default function NavigationBar() {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <Link to="/" className="text-white font-bold text-lg tracking-tight flex items-center">
-              <span className="bg-indigo-500 rounded p-1 mr-2 text-white"><LayoutDashboard size={18} /></span> 
+              <img src="/p111/favicon.svg" alt="Focus OS logo" className="w-7 h-7 mr-2 rounded" />
               Focus OS
             </Link>
           </div>

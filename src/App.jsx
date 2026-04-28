@@ -632,14 +632,14 @@ function FocusOS() {
                   <p className="text-indigo-400 font-bold uppercase tracking-widest text-sm mb-8">{mondayDrop.niche}</p>
 
                   <div className="bg-slate-900/80 p-6 rounded-xl border border-slate-800 mb-8 border-l-4 border-l-indigo-500">
-                    <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Market Insight Rationale</h4>
+                    <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Market Insight Rationale</h3>
                     <p className="text-slate-300 font-medium leading-relaxed">{mondayDrop.marketInsight}</p>
                   </div>
 
                   <div className="mb-8">
-                     <h4 className="text-sm font-bold text-slate-400 flex items-center gap-2 mb-3">
+                     <h3 className="text-sm font-bold text-slate-400 flex items-center gap-2 mb-3">
                        <TerminalSquare className="w-4 h-4" /> Agent System 'God Prompt' Prepared:
-                     </h4>
+                     </h3>
                      <div className="bg-[#050505] border border-slate-800 rounded-lg p-5">
                        <pre className="font-mono text-xs text-emerald-400/90 whitespace-pre-wrap leading-loose">
                          {mondayDrop.agentGodPrompt}
