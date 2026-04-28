@@ -11,7 +11,7 @@ export default function AboutPage() {
           Welcome to Focus OS! This dashboard helps you seamlessly manage the <strong>Productivity Planner Bundle</strong> and <strong>Nexus AI Dashboard Kit</strong>. Tailored for absolute focus and rapid project tracking.
         </p>
         <div className="bg-indigo-950/30 border border-indigo-500/20 p-6 rounded-2xl">
-          <h3 className="text-xl font-semibold text-indigo-400 mb-4">Features</h3>
+          <h2 className="text-xl font-semibold text-indigo-400 mb-4">Features</h2>
           <ul className="space-y-3 text-slate-300">
             <li className="flex items-center"><CheckCircle2 className="w-5 h-5 text-indigo-500 mr-3" /><span>Vite SPA Routing via HashRouter</span></li>
             <li className="flex items-center"><CheckCircle2 className="w-5 h-5 text-indigo-500 mr-3" /><span>Tailwind CSS Implementation</span></li>

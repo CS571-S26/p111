@@ -72,6 +72,7 @@ export default function TaskBoard({
                 <div className="bg-slate-700/50 rounded p-3">
                   <input
                     type="text"
+                    aria-label={`New task for ${stage.label}`}
                     value={newTaskText}
                     onChange={(e) => setNewTaskText(e.target.value)}
                     onKeyPress={(e) => {

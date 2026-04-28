@@ -25,8 +25,9 @@ export default function NewProjectModal({
         <form onSubmit={handleCreateProject}>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Project Title</label>
+              <label htmlFor="modal-title" className="block text-sm font-medium text-slate-300 mb-2">Project Title</label>
               <input
+                id="modal-title"
                 type="text"
                 value={newProjectForm.title}
                 onChange={(e) => setNewProjectForm({...newProjectForm, title: e.target.value})}
@@ -36,8 +37,9 @@ export default function NewProjectModal({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Niche</label>
+              <label htmlFor="modal-niche" className="block text-sm font-medium text-slate-300 mb-2">Niche</label>
               <input
+                id="modal-niche"
                 type="text"
                 value={newProjectForm.niche}
                 onChange={(e) => setNewProjectForm({...newProjectForm, niche: e.target.value})}
@@ -46,8 +48,9 @@ export default function NewProjectModal({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Type</label>
+              <label htmlFor="modal-type" className="block text-sm font-medium text-slate-300 mb-2">Type</label>
               <select
+                id="modal-type"
                 value={newProjectForm.type}
                 onChange={(e) => setNewProjectForm({...newProjectForm, type: e.target.value})}
                 className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-indigo-500 focus:outline-none"

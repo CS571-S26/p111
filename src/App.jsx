@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 
 import NavigationBar from './components/NavigationBar';
+import Footer from './components/Footer';
 import AboutPage from './pages/AboutPage';
 import ProjectsPage from './pages/ProjectsPage';
 import Sidebar from './components/Sidebar';
@@ -32,6 +33,7 @@ export default function App() {
             <Route path="/projects" element={<ProjectsPage />} />
           </Routes>
         </main>
+        <Footer />
       </div>
     </Router>
   );
@@ -394,7 +396,7 @@ function FocusOS() {
     return (
       <div className="max-w-6xl mx-auto animate-in fade-in duration-300 pb-16 pt-4">
         <header className="mb-10 text-center">
-          <h1 className="text-4xl font-black bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent mb-2">FocusOS: Autonomous Venture Studio Pipeline</h1>
+          <h2 className="text-4xl font-black bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent mb-2">FocusOS: Autonomous Venture Studio Pipeline</h2>
           <p className="text-slate-400 text-sm">Interactive architecture map of your self-feeding, AI-driven SaaS factory.</p>
         </header>
 
@@ -849,44 +851,6 @@ function FocusOS() {
           )}
         </div>
       </main>
-
-      {/* NEW PROJECT MODAL */}
-      {showNewProjectModal && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[60] flex items-center justify-center p-4">
-          <div className="bg-[#12141c] rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200 border border-slate-800">
-            <div className="p-8 border-b border-slate-800 flex justify-between items-center bg-slate-900/50">
-              <h3 className="text-2xl font-black text-white flex items-center gap-3">
-                <Rocket className="w-6 h-6 text-indigo-500" /> New Directive
-              </h3>
-              <button onClick={() => setShowNewProjectModal(false)} className="text-slate-500 hover:text-white bg-slate-800 rounded-full p-1.5 shadow-sm transition-colors"><X className="w-5 h-5" /></button>
-            </div>
-            
-            <form onSubmit={handleCreateProject} className="p-8 space-y-6">
-              <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Project Title</label>
-                <input type="text" required autoFocus value={newProjectForm.title} onChange={e => setNewProjectForm({...newProjectForm, title: e.target.value})} placeholder="e.g., AI Lead Gen Scraper" className="w-full px-5 py-4 bg-slate-900 border border-slate-800 rounded-xl outline-none focus:border-indigo-500 transition-all font-medium text-white placeholder:text-slate-600" />
-              </div>
-              
-              <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Market / Niche</label>
-                <input type="text" required value={newProjectForm.niche} onChange={e => setNewProjectForm({...newProjectForm, niche: e.target.value})} placeholder="e.g., B2B SaaS, KDP" className="w-full px-5 py-4 bg-slate-900 border border-slate-800 rounded-xl outline-none focus:border-indigo-500 transition-all font-medium text-white placeholder:text-slate-600" />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Classification</label>
-                <div className="grid grid-cols-2 gap-4">
-                  <button type="button" onClick={() => setNewProjectForm({...newProjectForm, type: 'sprint'})} className={`px-4 py-4 rounded-xl border-2 font-bold text-sm transition-all flex flex-col items-center gap-2 ${newProjectForm.type === 'sprint' ? 'border-amber-500 bg-amber-500/10 text-amber-400' : 'border-slate-800 text-slate-500 hover:border-slate-700 bg-slate-900'}`}><Zap className="w-6 h-6" /> 1-Week Sprint</button>
-                  <button type="button" onClick={() => setNewProjectForm({...newProjectForm, type: 'vault'})} className={`px-4 py-4 rounded-xl border-2 font-bold text-sm transition-all flex flex-col items-center gap-2 ${newProjectForm.type === 'vault' ? 'border-slate-500 bg-slate-800 text-white' : 'border-slate-800 text-slate-500 hover:border-slate-700 bg-slate-900'}`}><Archive className="w-6 h-6" /> Send to Vault</button>
-                </div>
-              </div>
-
-              <div className="pt-4 flex gap-4">
-                <button type="submit" className="flex-1 px-4 py-4 rounded-xl font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-[0_0_20px_rgba(99,102,241,0.3)] transition-transform active:scale-95">Initialize Project</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       <NewProjectModal
         showNewProjectModal={showNewProjectModal}

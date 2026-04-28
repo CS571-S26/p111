@@ -26,6 +26,7 @@ export default function ProjectsPage() {
         <p className="text-lg leading-relaxed text-slate-400 mb-8">
           Overview of all your projects across sprints, anchors, and vaulted ideas.
         </p>
+        <h2 className="text-lg font-semibold text-slate-300 mb-4">Project Overview</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map(project => (
             <div key={project.id} className="bg-slate-800/50 border border-slate-700 rounded-xl p-6 hover:bg-slate-800/70 transition-colors">
